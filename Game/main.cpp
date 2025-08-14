@@ -43,5 +43,5 @@ int main()
 	//clean up and terminate GLFW
     glfwDestroyWindow(window);
     glfwTerminate();
-	return 0;
+    return 0;
 }
