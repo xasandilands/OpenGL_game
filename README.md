@@ -1,2 +1,2 @@
 # OpenGL_game
-a basic game made with openGL and c++. 
+a basic game made with openGL and c. 
