@@ -23,7 +23,7 @@ class Shader
 		//delete the shader program
 		void Delete();
 
-		void compileErros(unsigned int shader, const char* type);
+		void compileErrors(unsigned int shader, const char* type);
 };
 
 #endif

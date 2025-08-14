@@ -60,3 +60,31 @@ void Shader::Delete()
 	//deletes the shader program
 	glDeleteProgram(shadRef);
 }
+
+void Shader::compileErrors(unsigned int shader, const char* type)
+{
+	//status variable to check if the shader compiled successfully
+	GLint success;
+	char infoLog[1024];
+	if(type != "PROGRAM")
+	{
+		//check program compilation status
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+		if(!success)
+		{
+			//print infolog when shader compilation fails
+			glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+			std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+		}
+	}
+	else
+	{
+		//check program linking status
+		glGetProgramiv(shader, GL_LINK_STATUS, &success);
+		if(!success)
+		{
+			glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+			std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+		}
+	}
+}
