@@ -19,6 +19,9 @@ std::string get_file_content(const char* filename)
 
 Shader::Shader(const char* vertexFile, const char* fragmentFile)
 {
+	GLint success;
+	GLchar infoLog[1024];
+
 	//reads the vertex and fragment shader files and stores contents in strings
 	std::string vertexContents = get_file_content(vertexFile);
 	std::string fragmentContents = get_file_content(fragmentFile);
@@ -33,11 +36,25 @@ Shader::Shader(const char* vertexFile, const char* fragmentFile)
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	//compile the vertex shader
 	glCompileShader(vertexShader);
+	//check if compilation was successful
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+	if (success == GL_FALSE)
+	{
+		glGetShaderInfoLog(vertexShader, 1024, NULL, infoLog);
+		std::cout << "ERROR VERTEX SHADER COMPILATION FAILED\n" << infoLog << std::endl;
+	}
 
 	//gets reference of fragment shader
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	//compile the fragment shader
 	glCompileShader(fragmentShader);
+	//check if compilation was successful
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+	if (success == GL_FALSE)
+	{
+		glGetShaderInfoLog(fragmentShader, 1024, NULL, infoLog);
+		std::cout << "ERROR FRAGMENT SHADER COMPILATION FAILED\n" << infoLog << std::endl;
+	}
 
 	//create the shader program
 	shadRef = glCreateProgram(); 
@@ -61,30 +78,4 @@ void Shader::Delete()
 	glDeleteProgram(shadRef);
 }
 
-void Shader::compileErrors(unsigned int shader, const char* type)
-{
-	//status variable to check if the shader compiled successfully
-	GLint success;
-	char infoLog[1024];
-	if(type != "PROGRAM")
-	{
-		//check program compilation status
-		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-		if(!success)
-		{
-			//print infolog when shader compilation fails
-			glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-			std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
-		}
-	}
-	else
-	{
-		//check program linking status
-		glGetProgramiv(shader, GL_LINK_STATUS, &success);
-		if(!success)
-		{
-			glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-			std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
-		}
-	}
-}
+
